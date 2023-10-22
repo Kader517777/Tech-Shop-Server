@@ -31,21 +31,21 @@ async function run() {
         const products = database.collection("products");
         const brands = database.collection("brands");
 
+        app.get('/brands', async (req, res) => {
+            const allBrand = await brands.find();
+            const result = await allBrand.toArray();
+            res.send(result);
+
+        });
         app.get('/products', async (req, res) => {
-            const allProduct = products.find();
-            const result = await allProduct.toArray();
+            const allProducts = await products.find();
+            const result = await allProducts.toArray();
             res.send(result);
 
         });
         app.post('/products', async (req, res) => {
             const product = req.body;
             const result = await products.insertOne(product);
-            res.send(result);
-
-        });
-        app.post('/brands', async (req, res) => {
-            const product = req.body;
-            const result = await brands.insertOne(product);
             res.send(result);
 
         });
