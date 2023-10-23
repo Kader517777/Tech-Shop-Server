@@ -77,8 +77,20 @@ async function run() {
             console.log(result);
 
         });
-
-
+        // product route put operation
+        app.put('/products', async (req, res) => {
+            const { name, image, brandName, catagoryName, price, Rating, shortDescription, detailsDescription, id } = req.body;
+            const filter = { _id: new ObjectId(id) };
+            const options = { upsert: true };
+            console.log(filter);
+            const updateDoc = {
+                $set: {
+                    name, image, brandName, catagoryName, price, Rating, shortDescription, detailsDescription, id
+                },
+            };
+            const result = await products.updateOne(filter, updateDoc, options);
+            console.log(result);
+        });
         console.log('name');
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
