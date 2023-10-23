@@ -1,5 +1,5 @@
 const express = require('express');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const cors = require('cors');
 require('dotenv').config();
 const app = express();
@@ -8,8 +8,6 @@ const port = process.env.PORT || 3600;
 // Middleware
 app.use(cors());
 app.use(express.json());
-
-console.log(process.env.DB_USER);
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.m2hfneo.mongodb.net/?retryWrites=true&w=majority`;
 
@@ -30,11 +28,13 @@ async function run() {
         const database = client.db("tech-shop-DB");
         const products = database.collection("products");
         const brands = database.collection("brands");
+        const addToCard = database.collection("addToCart");
 
         app.get('/brands', async (req, res) => {
             const allBrand = await brands.find();
             const result = await allBrand.toArray();
             res.send(result);
+            console.log('clic');
 
         });
         app.get('/products', async (req, res) => {
@@ -43,10 +43,38 @@ async function run() {
             res.send(result);
 
         });
+
+        // add to cart get 
+        app.get('/cart', async (req, res) => {
+            const allProducts = await addToCard.find();
+            const result = await allProducts.toArray();
+            res.send(result);
+            console.log('post');
+        });
+        // Add product 
         app.post('/products', async (req, res) => {
             const product = req.body;
             const result = await products.insertOne(product);
             res.send(result);
+
+        });
+
+        // Add to Cart post
+        app.post('/cart', async (req, res) => {
+            const product = req.body;
+            const result = await addToCard.insertOne(product);
+            res.send(result);
+            console.log(result);
+
+        });
+        // delete add to cart product
+        app.delete('/delete/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: id };
+            console.log(query);
+            const result = await addToCard.deleteOne(query);
+            res.send(result);
+            console.log(result);
 
         });
 
