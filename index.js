@@ -23,7 +23,7 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
-        await client.connect();
+        // await client.connect();
 
         const database = client.db("tech-shop-DB");
         const products = database.collection("products");
@@ -31,14 +31,14 @@ async function run() {
         const addToCard = database.collection("addToCart");
 
         app.get('/brands', async (req, res) => {
-            const allBrand = await brands.find();
+            const allBrand = brands.find();
             const result = await allBrand.toArray();
             res.send(result);
             console.log('clic');
 
         });
         app.get('/products', async (req, res) => {
-            const allProducts = await products.find();
+            const allProducts = products.find();
             const result = await allProducts.toArray();
             res.send(result);
 
@@ -53,6 +53,7 @@ async function run() {
         });
         // Add product 
         app.post('/products', async (req, res) => {
+
             const product = req.body;
             const result = await products.insertOne(product);
             res.send(result);
@@ -103,6 +104,6 @@ async function run() {
 run().catch(console.dir);
 
 
-
+module.exports = app;
 
 app.listen(port, () => { console.log('port is:', port) });
